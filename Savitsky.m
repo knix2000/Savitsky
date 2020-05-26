@@ -1,39 +1,7 @@
+% implementing http://www.westlawn.edu/ReferenceInfo/SavitskyPlaningHulls1964.pdf
 function Savitsky
 clc
-%clear all
-%# tau trim
-%
-%b=2.3 # beam
-%beta=15 # deamrise
-%tau=5 # angle of attack
-%d=0.4 # draft at speed
-%
-%L2=b *tand(beta)/(2*tand(tau)) # water level line length
-%
-%lambda=(d/sin(tau) - b*tand(beta)/(2*pi*tand(tau)))/b % wetted length-beam ratio
-%
-%Lk=d/sin(tau)
-%lambda=(Lk+Lc)/(2*b)
-%
-%# phi is the angle between the keel and spray edge measured in the plane of the bottom
-%# tand(phi)=A+k1/(1-Ak1)
-%A=((sind(tau)²*(1-2*K)+K²tand(tau)²*power(1/sind(beta)²-sind(tau)²),1/2))/(cosd(tau)+K*tand(tau)*sind(tau))
-%k1=K*tand(tau)/sind(beta)
-%
-%tand(theta)=tand(phi)*cosd(beta)
-%
-%tand(alpha)=(pi/2)*(tand(tau)/tand(beta))
-%
-%As=(b²/2)*(tand(beta)/(pi*tand(tau)) - 1/(4*tand(phi)*cosd(beta)))
-%
-%CL=A*tau+B*tau²
-%
-%CLd=c*power(lambda, 0.5)*power(tau, 1.1) % 10
 
-% Hydrostatic lift:
-%Lb=(1/2)*rho*g*b³*(lambda-0.3)²*tand(tau) # 11
-%
-%CL=power(tau,1.1)*(c*power(lambda, 0.5) + D*power(lambda, n)/Cv²) % 14
 g=9.81
 rho=1025
 beta=10 %grader
@@ -53,13 +21,6 @@ CLbeta=depl/(0.5*rho*power(V,2)*power(b,2))
 
 CL0=findx(@CLbetaCalc, CLbeta, beta)
 
-%CLbetaCalc=0;
-%CL0=0;
-%while(abs(CLbetaCalc-CLbeta)>0.00001)
-%  CL0=CL0+0.000001;
-%  CLbetaCalc=CL0-0.0065*beta*power(CL0, 0.6); % (16) figure 11 
-%end
-%CL0
 
 tau=2
 tau11=power(tau,1.1)
@@ -133,51 +94,6 @@ row30=row27+row29
 
 eq35=depl*(row
 
-% zero deadrise:
-%CL0=tau11*(0.012*power(lambda, 0.5) + 0.0055*power(lambda, 2.5)/power(Cv,2)) % 15
-%CL0divtau11=(0.012*power(lambda, 0.5) + 0.0055*power(lambda, 2.5)/power(Cv,2))
-% 0.60 <= Cv <= 13.00, 2 <= tau <= 15, lambda <= 4
-%
-% Dp=delta*tand(tau) % 17
-%
-% D=delta*tand(tau) + Df/cosd(tau) % 18
-%
-% Df=Cfpho*V1²*(lambda*b²)/(2*cosd(beta)⁴) % 19
-%
-% CLd=0.012*power(lambda, 0.5)*power(tau, 1.1) % 20
-%
-% deltad=(1/2)*rho*V²*b²*(0.012*power(lambda, 0.5)*power(tau, 1.1)) % 20 dynamic loadon the bottom
-%
-% pd=deltad/(lambda*b²*cosd(tau))
-%
-% V1=V*power(1-2*pd/(rho*V²), 0.5) % (23) average bottom velocity
-%
-% trim larger than 4 deg (9) and (17):
-% D=delta*tand(tau) + rho*V1²*Cf*lambda*b²/(2*cosd(beta)*cosd(tau))
-%
-% Rn=V1*lambda*b/nu # where nu is the kinematic viscosity
-%
-% D/delta=tand(tau)+(rho*V1²*Cf*lambda*b²)/(2*delta*cosd(beta)*cosd(tau)) # (26) drag-lift ratio
-%
-% D/delta=tand(tau) + ((V1/V)²*Cf*lambda)/(CL*cosd(tau)*cosd(beta)) % (27)
-
-% vertical equilibrium of forces:
-% delta0=N*cosd(tau) + T*sind(tau+epsilon)-Df*sind(tau) % (29)
-
-# for horizontal equilibrium of forces:
-
-%%T*cosd(tau+epsilon)=Df*cosd(tau) + N*sind(tau) % (30)
-
-% for equilibrium of pitching moments:
-%%Nc + Df*a - Tf=0 % (31)
-
-% equilibrium trim taue
-% trim at which (30) = 0
-
-
-
-%%%CV=V/sqrt(g*b)
-%CLbeta= delta/((1/2)*rho*V²*b²)
 
 
 end
