@@ -2,16 +2,30 @@
 function Savitsky
 clc
 
-g=9.81
-rho=1025
+##g=9.81
+##rho=1025
+##nu=1.787e-6;
+##beta=10 %grader
+##V=40*1852/3600
+##b=14*0.3048
+##depl=60000*0.453592*g % i N
+##LCG=29*0.3048
+##VCG=2*0.3048
+##epsilon = 4
+##f=0.5*0.3048
+
+g=32.17405
+rho=1.95
+nu=1e-5
 beta=10 %grader
-V=40*1852/3600
-b=14*0.3048
-depl=60000*0.453592*g % i N
-LCG=29*0.3048
-VCG=2*0.3048
+V=67.5
+b=14
+depl=60000
+LCG=29
+VCG=2
 epsilon = 4
-f=0.5*0.3048
+f=0.5
+
 
 CV=V/sqrt(g*b)
 
@@ -38,16 +52,17 @@ lambda=findx(@CL0divtau11Calc, CL0divtau11, CV)
 
 V1=V*sqrt(1-0.012*power(tau, 1.1)/(power(lambda, 0.5)*cosd(tau)))
 
-nu=1.787e-6;
 
 Re=V1*lambda*b/nu
 
 Cf=0.00174;
 deltaCf=0.0004;
 
-Df=rho*V**2*lambda*b**2*(Cf+deltaCf)/(2*cosd(beta))
+##lambda=3.85
 
-DfLbs=(Df/9.81)/0.453592
+Df=rho*V1**2*lambda*b**2*(Cf+deltaCf)/(2*cosd(beta))
+
+##DfLbs=(Df/9.81)/0.453592
 
 tand(tau)
 %row 12
@@ -55,10 +70,10 @@ sind(tau)
 cosd(tau)
 
 % row 14:
-depl*tand(tau)
+row14=depl*tand(tau)
 
 % row 15:
-Df/cosd(tau);
+row15=Df/cosd(tau)
 %row 16:
 D=depl*tand(tau)+Df/cosd(tau)
 
@@ -66,7 +81,7 @@ D=depl*tand(tau)+Df/cosd(tau)
 Cp=0.75 - 1/((5.21*CV**2)/lambda**2+2.39)
 
 %row 18
-Cp*lambda*b;
+row18=Cp*lambda*b
 %row 19
 c=LCG-Cp*lambda*b
 
@@ -79,11 +94,12 @@ row22=sind(tau+epsilon)
 row23=1-sind(tau)*sind(tau+epsilon)
 
 %row 24
+row24=row23*(c/cosd(tau))
 row24=(1-sind(tau)*sind(tau+epsilon))*(c/cosd(tau))
 
 row25=f*sind(tau)
 
-row26=row24+row25
+row26=row24-row25
 
 row27=depl*row26
 
@@ -92,7 +108,9 @@ row29=Df*(a-f)
 
 row30=row27+row29
 
-eq35=depl*(row
+N=depl*(1-sind(tau)*sind(tau+epsilon))/cosd(tau) % (34)
+
+eq35=depl*( (1-sind(tau)*sind(tau+epsilon))*c/cosd(tau) - f*sind(tau)) + Df*(a-f) % should be =0
 
 
 
@@ -121,19 +139,6 @@ function x=findx(func, yGoal, args)
   
 end
 
-function y=funfun(x, args)
-  y=x**2;
-end
-
-%lambda=0;
-%CL0divtau11Calc=0;
-%while(abs(CL0divtau11Calc-CL0divtau11)>0.0001)
-%    
-%  dlambda=
-%  
-%  lambda=lambda+0.000001;
-%  CL0divtau11Calc=(0.012*power(lambda, 0.5) + 0.0055*power(lambda, 2.5)/power(CV,2));
-%end
 
 function CLbeta=CLbetaCalc(CL0, args)
   beta=args(1);
